@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
-
 <?import javafx.scene.layout.HBox?>
+
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bsd.pomodoro.Controller.MainScreen">
    <bottom>
-      <HBox >
+      <HBox>
       <Button fx:id="startButton" mnemonicParsing="false" onAction="#OnActionStart" text="Start" BorderPane.alignment="CENTER" />
       <Button fx:id="pauseButton" onAction="#onActionPause" text="Pause" />
       <Button fx:id="resetButton" onAction="#onActionStop" text="Reset" />
@@ -16,4 +19,16 @@
    <center>
       <Label fx:id="lblTimer" text="Label" BorderPane.alignment="CENTER" />
    </center>
+   <top>
+      <Label fx:id="lblActivityState" BorderPane.alignment="CENTER" />
+   </top>
+   <left>
+      <ImageView fx:id="settingImage" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" onMousePressed="#mousePressed">
+         <image>
+            <Image url="@../../../settings.png" />
+         </image>
+         <BorderPane.margin>
+            <Insets left="20.0" />
+         </BorderPane.margin></ImageView>
+   </left>
 </BorderPane>
