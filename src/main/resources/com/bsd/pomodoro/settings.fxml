@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bsd.pomodoro.Controller.SettingsScreenController">
+   <children>
+      <HBox layoutX="200.0" layoutY="319.0" prefHeight="44.0" prefWidth="200.0" spacing="75.0">
+         <children>
+            <Button fx:id="saveButton" mnemonicParsing="false" text="Save">
+               <HBox.margin>
+                  <Insets left="10.0" top="10.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="cancelButton" cancelButton="true" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#onActionCancel" text="Cancel">
+               <HBox.margin>
+                  <Insets top="10.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" layoutX="200.0" layoutY="14.0" prefHeight="50.0" prefWidth="200.0">
+         <children>
+            <Label text="Settings" textAlignment="CENTER">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <VBox alignment="CENTER" layoutX="336.0" layoutY="81.0" prefHeight="204.0" prefWidth="193.0" spacing="45.0">
+         <children>
+            <ComboBox fx:id="focusCombo" prefWidth="150.0" promptText="Focus" />
+            <ComboBox fx:id="shortBreakCombo" prefWidth="150.0" promptText="Short Break" />
+            <ComboBox fx:id="longBreakCombo" prefWidth="150.0" promptText="Long Break" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

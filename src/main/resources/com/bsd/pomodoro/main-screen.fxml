@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
@@ -23,12 +20,6 @@
       <Label fx:id="lblActivityState" BorderPane.alignment="CENTER" />
    </top>
    <left>
-      <ImageView fx:id="settingImage" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" onMousePressed="#mousePressed">
-         <image>
-            <Image url="@../../../settings.png" />
-         </image>
-         <BorderPane.margin>
-            <Insets left="20.0" />
-         </BorderPane.margin></ImageView>
+      <Button fx:id="settingsButton" mnemonicParsing="false"  BorderPane.alignment="CENTER" onAction="#onActionSettings"/>
    </left>
 </BorderPane>

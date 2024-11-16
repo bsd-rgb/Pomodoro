@@ -1,23 +1,23 @@
 package com.bsd.pomodoro.Controller;
 
 import com.bsd.pomodoro.Model.ActivityState;
+import com.bsd.pomodoro.Pomodoro;
 import javafx.animation.Animation;
 import javafx.animation.PauseTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -35,7 +35,9 @@ public class MainScreen implements Initializable {
     private PauseTransition breakTimer = new PauseTransition(Duration.seconds(5));
     private ActivityState state;
     @FXML
-    private ImageView settingImage;
+    private Button settingsButton;
+
+
 
 
 //image view is a node used for painting images loaded with images
@@ -43,10 +45,14 @@ public class MainScreen implements Initializable {
     //imageView = picture frame
 
     Image img  = new Image("/settingsIcon.png");
+    ImageView settingImage = new ImageView(img);
+
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        settingsButton.setGraphic(settingImage);
 
         state = ActivityState.valueOf("FOCUS");
         lblTimer.textProperty().bind(timeLeft(focusTimer));
@@ -65,6 +71,7 @@ public class MainScreen implements Initializable {
             breakTimer.stop();
             focusTimer.jumpTo(Duration.ZERO);
             state = ActivityState.valueOf("FOCUS");
+            lblTimer.textProperty().bind(timeLeft(focusTimer));
             lblActivityState.setText(state.toString());
         });
 
@@ -75,7 +82,6 @@ public class MainScreen implements Initializable {
     void OnActionStart(ActionEvent event) {
         if(state.toString().equalsIgnoreCase("focus")){
             focusTimer.play();
-            settingImage.setImage(img);
             System.out.println("focus Timer Started.");
             state = ActivityState.valueOf("FOCUS");
             lblActivityState.setText(state.toString());
@@ -116,7 +122,18 @@ public class MainScreen implements Initializable {
     }
 
 
-    public void mousePressed() {
-        System.out.println("Settings gear clicked.");
+    @FXML
+    void onActionSettings(ActionEvent event) throws IOException {
+
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            FXMLLoader fxmlLoader = new FXMLLoader(Pomodoro.class.getResource("settings.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setTitle("Settings");
+            stage.setScene(scene);
+            stage.show();
+
+
+
+
     }
 }
