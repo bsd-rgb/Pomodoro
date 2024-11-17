@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Slider;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -37,6 +38,12 @@ public class SettingsScreenController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         focusCombo.setItems(pomodoroLength);
+        shortBreakCombo.setItems(pomodoroLength);
+        longBreakCombo.setItems(pomodoroLength);
+
+       setComboStringFormat(focusCombo);
+        setComboStringFormat(shortBreakCombo);
+        setComboStringFormat(longBreakCombo);
 
     }
 
@@ -47,6 +54,26 @@ public class SettingsScreenController implements Initializable {
         Scene scene = new Scene(fxmlLoader.load());
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void setComboStringFormat(ComboBox<Integer> comboBox){
+        comboBox.setConverter(new StringConverter<Integer>() {
+
+            @Override
+            public String toString(Integer integer) {
+                if(integer == 1){
+                    return integer + " Minute";
+                }
+                return integer + " Minutes";
+            }
+
+            @Override
+            public Integer fromString(String s) {
+                return Integer.valueOf(s);
+
+            }
+        });
+
     }
 
 
