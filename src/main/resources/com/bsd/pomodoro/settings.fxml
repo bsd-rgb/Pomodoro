@@ -13,7 +13,7 @@
    <children>
       <HBox layoutX="200.0" layoutY="319.0" prefHeight="44.0" prefWidth="200.0" spacing="75.0">
          <children>
-            <Button fx:id="saveButton" mnemonicParsing="false" text="Save">
+            <Button fx:id="saveButton" mnemonicParsing="false" text="Save" onAction="#onActionSave">
                <HBox.margin>
                   <Insets left="10.0" top="10.0" />
                </HBox.margin>

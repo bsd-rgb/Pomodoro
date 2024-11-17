@@ -2,5 +2,5 @@ package com.bsd.pomodoro.Model;
 
 public enum ActivityState {
 
-    FOCUS, BREAK;
+    FOCUS, SHORT_BREAK, LONG_BREAK;
 }

@@ -31,7 +31,7 @@ public class MainScreen implements Initializable {
     private Label lblTimer;
     @FXML
     private Label lblActivityState;
-    private PauseTransition focusTimer = new PauseTransition(Duration.seconds(10));
+    private PauseTransition focusTimer = new PauseTransition(Duration.seconds(SettingsScreenController.getFocusTime()));
     private PauseTransition breakTimer = new PauseTransition(Duration.seconds(5));
     private ActivityState state;
     @FXML
@@ -90,7 +90,7 @@ public class MainScreen implements Initializable {
         if(state.toString().equalsIgnoreCase("break")){
             breakTimer.play();
             System.out.println("break Timer Started.");
-            state = ActivityState.valueOf("BREAK");
+            state = ActivityState.valueOf("SHORT_BREAK");
             lblTimer.textProperty().bind(timeLeft(breakTimer));
             lblActivityState.setText(state.toString());
 

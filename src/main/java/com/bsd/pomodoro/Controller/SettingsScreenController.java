@@ -10,13 +10,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Slider;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalTime;
 import java.util.ResourceBundle;
 
 public class SettingsScreenController implements Initializable {
@@ -34,12 +32,16 @@ public class SettingsScreenController implements Initializable {
     private ComboBox<Integer> longBreakCombo;
     @FXML
     private ComboBox<Integer> shortBreakCombo;
+    private static int focusTime = 15;
+    private static int breakTime = 5;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         focusCombo.setItems(pomodoroLength);
         shortBreakCombo.setItems(pomodoroLength);
         longBreakCombo.setItems(pomodoroLength);
+        focusCombo.setValue(focusTime);
+        shortBreakCombo.setValue(breakTime);
 
        setComboStringFormat(focusCombo);
         setComboStringFormat(shortBreakCombo);
@@ -76,5 +78,31 @@ public class SettingsScreenController implements Initializable {
 
     }
 
+    public static int getFocusTime(){
+        return focusTime;
+    }
 
+    public static void setFocusTime(int setTime){
+        focusTime = setTime;
+    }
+
+    public static int getBreakTime(){
+        return breakTime;
+    }
+
+    public static void setBreakTime(int setTime){
+        breakTime = setTime;
+    }
+
+
+
+    public void onActionSave(ActionEvent event) throws IOException {
+        setFocusTime(focusCombo.getValue());
+        focusCombo.setValue(focusTime);
+        Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+        FXMLLoader fxmlLoader = new FXMLLoader(Pomodoro.class.getResource("main-screen.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setScene(scene);
+        stage.show();
+    }
 }
