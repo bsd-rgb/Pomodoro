@@ -1,7 +1,7 @@
 package com.bsd.pomodoro.Controller;
 
 import com.bsd.pomodoro.Model.ActivityState;
-import com.bsd.pomodoro.Pomodoro;
+import com.bsd.pomodoro.Main;
 import javafx.animation.Animation;
 import javafx.animation.PauseTransition;
 import javafx.beans.binding.Bindings;
@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-
 public class MainScreen implements Initializable {
 
     @FXML
@@ -31,14 +30,12 @@ public class MainScreen implements Initializable {
     private Label lblTimer;
     @FXML
     private Label lblActivityState;
-    private PauseTransition focusTimer = new PauseTransition(Duration.seconds(SettingsScreenController.getFocusTime()));
-    private PauseTransition breakTimer = new PauseTransition(Duration.seconds(5));
-    private ActivityState state;
     @FXML
     private Button settingsButton;
-
-
-
+    private PauseTransition focusTimer = new PauseTransition(Duration.seconds(SettingsController.getFocusTime()));
+    private PauseTransition shortBreakTimer = new PauseTransition(Duration.seconds(SettingsController.getShortBreakTime()));
+    private PauseTransition longBreakTimer = new PauseTransition(Duration.seconds(SettingsController.getLongBreakTime()));
+    private ActivityState state;
 
 //image view is a node used for painting images loaded with images
     //image = photograph
@@ -55,20 +52,46 @@ public class MainScreen implements Initializable {
         settingsButton.setGraphic(settingImage);
 
         state = ActivityState.valueOf("FOCUS");
+        lblActivityState.setText(state.toString());
         lblTimer.textProperty().bind(timeLeft(focusTimer));
 
 
         focusTimer.setOnFinished(e ->{
             System.out.println("Focus Timer finished");
             focusTimer.stop();
-            breakTimer.jumpTo(Duration.ZERO);
-            state = ActivityState.valueOf("BREAK");
-            lblTimer.textProperty().bind(timeLeft(breakTimer));
+
+            SettingsController.setInterval(SettingsController.getInterval() - 1);
+
+
+            if(SettingsController.getInterval() == 0){
+                state = ActivityState.valueOf("LONG_BREAK");
+                longBreakTimer.jumpTo(Duration.ZERO);
+                lblTimer.textProperty().bind(timeLeft(longBreakTimer));
+                lblActivityState.setText(state.toString());
+                SettingsController.resetInterval();
+
+            }else{
+                state = ActivityState.valueOf("SHORT_BREAK");
+                shortBreakTimer.jumpTo(Duration.ZERO);
+                lblTimer.textProperty().bind(timeLeft(shortBreakTimer));
+                lblActivityState.setText(state.toString());
+            }
+
+
+
+        });
+        shortBreakTimer.setOnFinished(e ->{
+            System.out.println("Short Break Timer finished.");
+            shortBreakTimer.stop();
+            focusTimer.jumpTo(Duration.ZERO);
+            state = ActivityState.valueOf("FOCUS");
+            lblTimer.textProperty().bind(timeLeft(focusTimer));
             lblActivityState.setText(state.toString());
         });
-        breakTimer.setOnFinished(e ->{
-            System.out.println("Break Timer finished.");
-            breakTimer.stop();
+
+        longBreakTimer.setOnFinished(e ->{
+            System.out.println("Long break timer finished.");
+            longBreakTimer.stop();
             focusTimer.jumpTo(Duration.ZERO);
             state = ActivityState.valueOf("FOCUS");
             lblTimer.textProperty().bind(timeLeft(focusTimer));
@@ -80,23 +103,28 @@ public class MainScreen implements Initializable {
 
     @FXML
     void OnActionStart(ActionEvent event) {
-        if(state.toString().equalsIgnoreCase("focus")){
+        if(state.toString().equalsIgnoreCase("FOCUS")){
             focusTimer.play();
             System.out.println("focus Timer Started.");
             state = ActivityState.valueOf("FOCUS");
             lblActivityState.setText(state.toString());
+            System.out.println("Current Interval: " + SettingsController.getInterval());
 
         }
-        if(state.toString().equalsIgnoreCase("break")){
-            breakTimer.play();
-            System.out.println("break Timer Started.");
-            state = ActivityState.valueOf("SHORT_BREAK");
-            lblTimer.textProperty().bind(timeLeft(breakTimer));
+        if(state.toString().contains("BREAK")){
+            if(state.toString().equalsIgnoreCase("long_break")){
+                longBreakTimer.play();
+                System.out.println("long break Timer Started.");
+                state = ActivityState.valueOf("LONG_BREAK");
+                lblTimer.textProperty().bind(timeLeft(longBreakTimer));
+            }else{
+                shortBreakTimer.play();
+                System.out.println("short break Timer Started.");
+                state = ActivityState.valueOf("SHORT_BREAK");
+                lblTimer.textProperty().bind(timeLeft(shortBreakTimer));
+            }
             lblActivityState.setText(state.toString());
-
         }
-
-
     }
 
     public void onActionPause(ActionEvent actionEvent) {
@@ -115,7 +143,7 @@ public class MainScreen implements Initializable {
                     double totalTime = animation.getCycleDuration().toMillis();
                     long remainingTime = Math.round(totalTime - currentTime);
                     java.time.Duration duration = java.time.Duration.ofMillis(remainingTime);
-                    return String.format("%d:%02d:%03d", duration.toMinutes(), duration.toSecondsPart(), duration.toMillisPart());
+                    return String.format("%d:%02d", duration.toMinutes(), duration.toSecondsPart());
                 },
                 animation.currentTimeProperty(),
                 animation.cycleDurationProperty());
@@ -126,14 +154,10 @@ public class MainScreen implements Initializable {
     void onActionSettings(ActionEvent event) throws IOException {
 
             Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-            FXMLLoader fxmlLoader = new FXMLLoader(Pomodoro.class.getResource("settings.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("settings.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
             stage.setTitle("Settings");
             stage.setScene(scene);
             stage.show();
-
-
-
-
     }
 }
