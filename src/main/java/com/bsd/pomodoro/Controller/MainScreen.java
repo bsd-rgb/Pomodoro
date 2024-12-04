@@ -1,5 +1,6 @@
 package com.bsd.pomodoro.Controller;
 
+import com.bsd.pomodoro.Helper.PropertiesUtil;
 import com.bsd.pomodoro.Model.ActivityState;
 import com.bsd.pomodoro.Main;
 import javafx.animation.Animation;
@@ -32,9 +33,9 @@ public class MainScreen implements Initializable {
     private Label lblActivityState;
     @FXML
     private Button settingsButton;
-    private PauseTransition focusTimer = new PauseTransition(Duration.seconds(SettingsController.getFocusTime()));
-    private PauseTransition shortBreakTimer = new PauseTransition(Duration.seconds(SettingsController.getShortBreakTime()));
-    private PauseTransition longBreakTimer = new PauseTransition(Duration.seconds(SettingsController.getLongBreakTime()));
+    private PauseTransition focusTimer = new PauseTransition(Duration.seconds(Integer.parseInt(PropertiesUtil.getFocusPreference())));
+    private PauseTransition shortBreakTimer = new PauseTransition(Duration.seconds(Integer.parseInt(PropertiesUtil.getShortPreference())));
+    private PauseTransition longBreakTimer = new PauseTransition(Duration.seconds(Integer.parseInt(PropertiesUtil.getLongPreference())));
     private ActivityState state;
 
 //image view is a node used for painting images loaded with images

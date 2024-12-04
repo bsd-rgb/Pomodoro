@@ -1,5 +1,6 @@
 package com.bsd.pomodoro.Controller;
 
+import com.bsd.pomodoro.Helper.PropertiesUtil;
 import com.bsd.pomodoro.Main;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,28 +34,22 @@ public class SettingsController implements Initializable {
     @FXML
     private static TextField longBreakInterval;
     private static  int defaultInterval = 3;
-    private static final int defaultFocusTime = 10;
-    private static final int defaultShortBreak = 5;
-    private static final int defaultLongBreak = 15;
     private static int interval = defaultInterval;
-    private static int focusTime = defaultFocusTime;
-    private static int shortBreakTime = defaultShortBreak;
-    private static int longBreakTime = defaultLongBreak;
-
+    int longBreakSession;
+//TODO: set the intervals in the properties. Retrieve and store as required.
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         focusCombo.setItems(pomodoroLength);
         shortBreakCombo.setItems(pomodoroLength);
         longBreakCombo.setItems(pomodoroLength);
-        focusCombo.setValue(focusTime);
-        shortBreakCombo.setValue(shortBreakTime);
-        longBreakCombo.setValue(longBreakTime);
-        //longBreakInterval.setText("h");
+        focusCombo.setValue(Integer.parseInt(PropertiesUtil.getFocusPreference()));
+        shortBreakCombo.setValue(Integer.parseInt(PropertiesUtil.getShortPreference()));
+        longBreakCombo.setValue(Integer.parseInt(PropertiesUtil.getLongPreference()));
 
        setComboStringFormat(focusCombo);
-        setComboStringFormat(shortBreakCombo);
-        setComboStringFormat(longBreakCombo);
+       setComboStringFormat(shortBreakCombo);
+       setComboStringFormat(longBreakCombo);
     }
 
     private void setComboStringFormat(ComboBox<Integer> comboBox){
@@ -77,29 +72,6 @@ public class SettingsController implements Initializable {
 
     }
 
-    public static int getFocusTime(){
-        return focusTime;
-    }
-
-    public static void setFocusTime(int setTime){
-        focusTime = setTime;
-    }
-
-    public static int getShortBreakTime(){
-        return shortBreakTime;
-    }
-
-    public static void setShortBreakTime(int setTime){
-        shortBreakTime = setTime;
-    }
-
-    public static int getLongBreakTime(){
-        return longBreakTime;
-    }
-
-    public static void setLongBreakTime(int setTime){
-        longBreakTime = setTime;
-    }
 
     public static int getInterval(){
         return interval;
@@ -116,18 +88,20 @@ public class SettingsController implements Initializable {
     }
 
     public void onActionSave(ActionEvent event) throws IOException {
-        setFocusTime(focusCombo.getValue());
-        focusCombo.setValue(focusTime);
+        PropertiesUtil.setPreferences(focusCombo.getValue(), "focus");
+        focusCombo.setValue(Integer.parseInt(PropertiesUtil.getFocusPreference()));
 
-        setShortBreakTime(shortBreakCombo.getValue());
-        shortBreakCombo.setValue(shortBreakTime);
+        PropertiesUtil.setPreferences(shortBreakCombo.getValue(), "short_break");
+        focusCombo.setValue(Integer.parseInt(PropertiesUtil.getShortPreference()));
 
-        setLongBreakTime(longBreakCombo.getValue());
-        longBreakCombo.setValue(longBreakTime);
+
+        PropertiesUtil.setPreferences(longBreakCombo.getValue(), "long_break");
+        focusCombo.setValue(Integer.parseInt(PropertiesUtil.getLongPreference()));
 
         setInterval(Integer.parseInt(longBreakInterval.getText()));
         defaultInterval = Integer.parseInt(longBreakInterval.getText());
-        longBreakInterval.setText(String.valueOf(defaultInterval));
+        longBreakInterval.setText(String.valueOf(3));
+        longBreakSession = defaultInterval;
 
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("main-screen.fxml"));
