@@ -1,25 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bsd.pomodoro.Controller.MainScreen">
-   <bottom>
-      <HBox>
-      <Button fx:id="startButton" mnemonicParsing="false" onAction="#OnActionStart" text="Start" BorderPane.alignment="CENTER" />
-      <Button fx:id="pauseButton" onAction="#onActionPause" text="Pause" />
-      <Button fx:id="resetButton" onAction="#onActionStop" text="Reset" />
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bsd.pomodoro.Controller.MainScreen">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="10.0" prefWidth="74.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="439.0" minWidth="10.0" prefWidth="424.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="145.0" minWidth="10.0" prefWidth="77.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <Label fx:id="lblActivityState" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+      <HBox alignment="CENTER" prefHeight="133.0" prefWidth="292.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+         <children>
+            <Button fx:id="startButton" mnemonicParsing="false" onAction="#OnActionStart" text="Start" />
+            <Button fx:id="pauseButton" onAction="#onActionPause" text="Pause" />
+            <Button fx:id="resetButton" onAction="#onActionStop" text="Reset" />
+            <Region prefHeight="133.0" prefWidth="18.0" />
+            <Button fx:id="skipButton" mnemonicParsing="false" onAction="#onActionSkip" />
+         </children>
       </HBox>
-   </bottom>
-   <center>
-      <Label fx:id="lblTimer" text="Label" BorderPane.alignment="CENTER" />
-   </center>
-   <top>
-      <Label fx:id="lblActivityState" BorderPane.alignment="CENTER" />
-   </top>
-   <left>
-      <Button fx:id="settingsButton" mnemonicParsing="false"  BorderPane.alignment="CENTER" onAction="#onActionSettings"/>
-   </left>
-</BorderPane>
+      <Button fx:id="settingsButton" alignment="CENTER" mnemonicParsing="false" onAction="#onActionSettings" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.valignment="TOP" GridPane.vgrow="NEVER">
+         <GridPane.margin>
+            <Insets right="15.0" top="15.0" />
+         </GridPane.margin></Button>
+      <Label fx:id="lblTimer" alignment="CENTER" text="Label" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+   </children>
+</GridPane>

@@ -44,6 +44,14 @@ public class PropertiesUtil {
         return preferences.get("longBreak", "20");
     }
 
+    public static String getInterval(){
+        return preferences.get("interval", "3");
+    }
+
+    public static void setInterval(int intervalNum){
+        preferences.putInt("interval", intervalNum);
+    }
+
 
 
 

@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -19,12 +20,18 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javax.sound.sampled.*;
+
 
 public class MainScreen implements Initializable {
-
+    @FXML
+    public Button resetButton;
+    @FXML
+    public Button pauseButton;
     @FXML
     private Button startButton;
     @FXML
@@ -33,56 +40,46 @@ public class MainScreen implements Initializable {
     private Label lblActivityState;
     @FXML
     private Button settingsButton;
+    @FXML
+    private Button skipButton;
     private PauseTransition focusTimer = new PauseTransition(Duration.seconds(Integer.parseInt(PropertiesUtil.getFocusPreference())));
     private PauseTransition shortBreakTimer = new PauseTransition(Duration.seconds(Integer.parseInt(PropertiesUtil.getShortPreference())));
     private PauseTransition longBreakTimer = new PauseTransition(Duration.seconds(Integer.parseInt(PropertiesUtil.getLongPreference())));
     private ActivityState state;
+    private int intervalCounter = Integer.parseInt(PropertiesUtil.getInterval());
+    File timerFinishedSound = new File("src/main/resources/audio/timerFinish.wav");
+
 
 //image view is a node used for painting images loaded with images
     //image = photograph
     //imageView = picture frame
 
-    Image img  = new Image("/settingsIcon.png");
-    ImageView settingImage = new ImageView(img);
+    Image settingImg = new Image(String.valueOf(getClass().getResource("/images/settingsIcon.png")));
+    Image skipImg = new Image(String.valueOf(getClass().getResource("/images/skip.png")));
+    ImageView settingImage = new ImageView(settingImg);
+    ImageView skipImage = new ImageView(skipImg);
 
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
         settingsButton.setGraphic(settingImage);
-
+        skipButton.setGraphic(skipImage);
         state = ActivityState.valueOf("FOCUS");
         lblActivityState.setText(state.toString());
         lblTimer.textProperty().bind(timeLeft(focusTimer));
 
-
         focusTimer.setOnFinished(e ->{
             System.out.println("Focus Timer finished");
+            playSound();
             focusTimer.stop();
-
-            SettingsController.setInterval(SettingsController.getInterval() - 1);
-
-
-            if(SettingsController.getInterval() == 0){
-                state = ActivityState.valueOf("LONG_BREAK");
-                longBreakTimer.jumpTo(Duration.ZERO);
-                lblTimer.textProperty().bind(timeLeft(longBreakTimer));
-                lblActivityState.setText(state.toString());
-                SettingsController.resetInterval();
-
-            }else{
-                state = ActivityState.valueOf("SHORT_BREAK");
-                shortBreakTimer.jumpTo(Duration.ZERO);
-                lblTimer.textProperty().bind(timeLeft(shortBreakTimer));
-                lblActivityState.setText(state.toString());
-            }
-
-
-
+            intervalCounter--;
+            checkInterval();
         });
         shortBreakTimer.setOnFinished(e ->{
             System.out.println("Short Break Timer finished.");
+            playSound();
+
             shortBreakTimer.stop();
             focusTimer.jumpTo(Duration.ZERO);
             state = ActivityState.valueOf("FOCUS");
@@ -92,6 +89,7 @@ public class MainScreen implements Initializable {
 
         longBreakTimer.setOnFinished(e ->{
             System.out.println("Long break timer finished.");
+            playSound();
             longBreakTimer.stop();
             focusTimer.jumpTo(Duration.ZERO);
             state = ActivityState.valueOf("FOCUS");
@@ -104,12 +102,32 @@ public class MainScreen implements Initializable {
 
     @FXML
     void OnActionStart(ActionEvent event) {
-        if(state.toString().equalsIgnoreCase("FOCUS")){
+
+        if(state.toString().equalsIgnoreCase("FOCUS")) {
+            focusTimer.play();
+            System.out.println("Current Interval: " + intervalCounter);
+            System.out.println("focus Timer Started.");
+            setLabel();
+        }
+
+        if(state.toString().contains("Break")) {
+            if (state.toString().equalsIgnoreCase("long break")) {
+                longBreakTimer.play();
+                System.out.println("long break Timer Started.");
+            } else {
+                shortBreakTimer.play();
+                System.out.println("short break Timer Started.");
+
+            }
+            setLabel();
+        }
+
+       /* if(state.toString().equalsIgnoreCase("FOCUS")){
             focusTimer.play();
             System.out.println("focus Timer Started.");
             state = ActivityState.valueOf("FOCUS");
             lblActivityState.setText(state.toString());
-            System.out.println("Current Interval: " + SettingsController.getInterval());
+            System.out.println("Current Interval: " + intervalCounter*//*SettingsController.getInterval()*//*);
 
         }
         if(state.toString().contains("BREAK")){
@@ -125,7 +143,7 @@ public class MainScreen implements Initializable {
                 lblTimer.textProperty().bind(timeLeft(shortBreakTimer));
             }
             lblActivityState.setText(state.toString());
-        }
+        }*/
     }
 
     public void onActionPause(ActionEvent actionEvent) {
@@ -153,12 +171,86 @@ public class MainScreen implements Initializable {
 
     @FXML
     void onActionSettings(ActionEvent event) throws IOException {
+        System.out.println("Interval number:" + PropertiesUtil.getInterval());
 
-            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("settings.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-            stage.setTitle("Settings");
-            stage.setScene(scene);
-            stage.show();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(Main.class.getResource("settings.fxml"));
+        loader.load();
+        SettingsController settingsController = loader.getController();
+
+        try{
+            settingsController.sendSettings();
+        }catch(Exception e){
+            System.out.println("Error sending settings.");
+            System.out.println(e.getMessage());
+        }
+
+        Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+        Parent scene = loader.getRoot();
+        stage.setScene(new Scene(scene));
+        stage.show();
+    }
+
+    private void playSound() {
+        try{
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(timerFinishedSound);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+        }catch(IOException | UnsupportedAudioFileException | LineUnavailableException ex ){
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public void onActionSkip(ActionEvent event) {
+        if(state.toString().equalsIgnoreCase("FOCUS")){
+            if(focusTimer.getCurrentTime().toSeconds() > 0){
+                focusTimer.stop();
+            }
+            intervalCounter--;
+            System.out.println("Current Interval(after subtraction): " + intervalCounter);
+            checkInterval();
+        }else if(state.toString().contains("Break")) {
+            if(shortBreakTimer.getCurrentTime().toSeconds() > 0 || longBreakTimer.getCurrentTime().toSeconds() > 0){
+                shortBreakTimer.stop();
+                longBreakTimer.stop();
+            }
+            focusTimer.jumpTo(Duration.ZERO);
+            lblTimer.textProperty().bind(timeLeft(focusTimer));
+            state = ActivityState.valueOf("FOCUS");
+            setLabel();
+        }
+    }
+
+    private void setLabel(){
+        if(state.toString().equalsIgnoreCase("FOCUS")){
+            state = ActivityState.valueOf("FOCUS");
+            lblActivityState.setText(state.toString());
+        }
+        if(state.toString().contains("Break")){
+            if(state.toString().equalsIgnoreCase("long break")){
+                state = ActivityState.valueOf("LONG_BREAK");
+                lblTimer.textProperty().bind(timeLeft(longBreakTimer));
+            }else{
+                state = ActivityState.valueOf("SHORT_BREAK");
+                lblTimer.textProperty().bind(timeLeft(shortBreakTimer));
+            }
+            lblActivityState.setText(state.toString());
+        }
+    }
+
+    private void checkInterval(){
+        if(intervalCounter == 0){
+            state = ActivityState.valueOf("LONG_BREAK");
+            longBreakTimer.jumpTo(Duration.ZERO);
+            lblTimer.textProperty().bind(timeLeft(longBreakTimer));
+            lblActivityState.setText(state.toString());
+            intervalCounter = Integer.parseInt(PropertiesUtil.getInterval());
+        }else{
+            state = ActivityState.valueOf("SHORT_BREAK");
+            shortBreakTimer.jumpTo(Duration.ZERO);
+            lblTimer.textProperty().bind(timeLeft(shortBreakTimer));
+            lblActivityState.setText(state.toString());
+        }
     }
 }
