@@ -1,0 +1,13 @@
+.focus {
+    -fx-background-color: #a2d2ff;
+}
+
+.shortbreak {
+    -fx-background-color: #ffc8dd;
+}
+
+.longbreak{
+
+    -fx-background-color: #cdb4db;
+
+}

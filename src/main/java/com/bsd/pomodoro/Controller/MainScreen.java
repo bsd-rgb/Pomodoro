@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -25,7 +26,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javax.sound.sampled.*;
-
 
 public class MainScreen implements Initializable {
     @FXML
@@ -42,18 +42,14 @@ public class MainScreen implements Initializable {
     private Button settingsButton;
     @FXML
     private Button skipButton;
+    @FXML
+    GridPane gridPane;
     private PauseTransition focusTimer = new PauseTransition(Duration.seconds(Integer.parseInt(PropertiesUtil.getFocusPreference())));
     private PauseTransition shortBreakTimer = new PauseTransition(Duration.seconds(Integer.parseInt(PropertiesUtil.getShortPreference())));
     private PauseTransition longBreakTimer = new PauseTransition(Duration.seconds(Integer.parseInt(PropertiesUtil.getLongPreference())));
     private ActivityState state;
     private int intervalCounter = Integer.parseInt(PropertiesUtil.getInterval());
     File timerFinishedSound = new File("src/main/resources/audio/timerFinish.wav");
-
-
-//image view is a node used for painting images loaded with images
-    //image = photograph
-    //imageView = picture frame
-
     Image settingImg = new Image(String.valueOf(getClass().getResource("/images/settingsIcon.png")));
     Image skipImg = new Image(String.valueOf(getClass().getResource("/images/skip.png")));
     ImageView settingImage = new ImageView(settingImg);
@@ -66,6 +62,7 @@ public class MainScreen implements Initializable {
         settingsButton.setGraphic(settingImage);
         skipButton.setGraphic(skipImage);
         state = ActivityState.valueOf("FOCUS");
+        addAttemptStyle(state);
         lblActivityState.setText(state.toString());
         lblTimer.textProperty().bind(timeLeft(focusTimer));
 
@@ -75,6 +72,7 @@ public class MainScreen implements Initializable {
             focusTimer.stop();
             intervalCounter--;
             checkInterval();
+            addAttemptStyle(state);
         });
         shortBreakTimer.setOnFinished(e ->{
             System.out.println("Short Break Timer finished.");
@@ -82,8 +80,9 @@ public class MainScreen implements Initializable {
 
             shortBreakTimer.stop();
             focusTimer.jumpTo(Duration.ZERO);
-            state = ActivityState.valueOf("FOCUS");
+            state = ActivityState.valueOf("FOCUS") ;
             lblTimer.textProperty().bind(timeLeft(focusTimer));
+            addAttemptStyle(state);
             lblActivityState.setText(state.toString());
         });
 
@@ -94,9 +93,9 @@ public class MainScreen implements Initializable {
             focusTimer.jumpTo(Duration.ZERO);
             state = ActivityState.valueOf("FOCUS");
             lblTimer.textProperty().bind(timeLeft(focusTimer));
+            addAttemptStyle(state);
             lblActivityState.setText(state.toString());
         });
-
     }
 
 
@@ -116,8 +115,8 @@ public class MainScreen implements Initializable {
                 System.out.println("long break Timer Started.");
             } else {
                 shortBreakTimer.play();
+                System.out.println(state.toString());
                 System.out.println("short break Timer Started.");
-
             }
             setLabel();
         }
@@ -167,7 +166,6 @@ public class MainScreen implements Initializable {
                 animation.currentTimeProperty(),
                 animation.cycleDurationProperty());
     }
-
 
     @FXML
     void onActionSettings(ActionEvent event) throws IOException {
@@ -252,5 +250,13 @@ public class MainScreen implements Initializable {
             lblTimer.textProperty().bind(timeLeft(shortBreakTimer));
             lblActivityState.setText(state.toString());
         }
+
+    }
+
+    private void addAttemptStyle(ActivityState state) {
+        String lowerCase = state.toString().replaceAll("\\s", "").toLowerCase();
+        gridPane.getStyleClass().clear();
+        gridPane.getStyleClass().addAll("root", lowerCase);
     }
 }
+
