@@ -56,7 +56,6 @@ public class MainScreen implements Initializable {
     ImageView skipImage = new ImageView(skipImg);
 
 
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         settingsButton.setGraphic(settingImage);
@@ -65,6 +64,11 @@ public class MainScreen implements Initializable {
         addAttemptStyle(state);
         lblActivityState.setText(state.toString());
         lblTimer.textProperty().bind(timeLeft(focusTimer));
+
+        lblActivityState.getStyleClass().add("default");
+        lblTimer.getStyleClass().add("default");
+        startButton.getStyleClass().add("button1");
+
 
         focusTimer.setOnFinished(e ->{
             System.out.println("Focus Timer finished");
@@ -257,6 +261,7 @@ public class MainScreen implements Initializable {
         String lowerCase = state.toString().replaceAll("\\s", "").toLowerCase();
         gridPane.getStyleClass().clear();
         gridPane.getStyleClass().addAll("root", lowerCase);
+        //gridPane.getStyleClass().add(lowerCase);
     }
 }
 

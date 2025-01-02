@@ -1,13 +1,46 @@
+.default {
+    -fx-font-size: 20px;
+    -fx-text-background-color: #172537 ;
+    -fx-background-color: white;
+    -fx-padding: 25px;
+    -fx-border-width: 25px;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 8, 0, 0, 0);
+
+}
+
 .focus {
-    -fx-background-color: #a2d2ff;
+    -fx-background-color:#cc5b41;
+    /* #142844
+     595265*/
+
 }
 
 .shortbreak {
-    -fx-background-color: #ffc8dd;
+    -fx-background-color:  #8c70b1;
+    /* #142844
+    900C3F
+
+    */
 }
 
 .longbreak{
+    -fx-background-color:#4f753f;
+}
 
-    -fx-background-color: #cdb4db;
+.button{
+    -fx-text-fill: rgb(23, 37, 55);
+    -fx-font-size: 15px;
+    -fx-background-color:white;
+    -fx-background-radius:10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 3, 0, 0, 0);
+    -fx-margin: 10;
+}
 
+.button:hover{
+    -fx-background-color: #bcc4cd;
+}
+
+.button:pressed{
+    -fx-background-color: #9ba4ae;
 }

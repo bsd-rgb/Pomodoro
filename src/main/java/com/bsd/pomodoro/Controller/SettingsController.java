@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
@@ -33,6 +34,12 @@ public class SettingsController implements Initializable {
     private ComboBox<Integer> shortBreakCombo;
     @FXML
     private TextField longBreakInterval;
+    @FXML
+    AnchorPane anchorPane;
+
+    //TODO: set the SVG as the background image for the settings page. Finish remaining css for settings page.
+
+    //TODO: Keep style settings when navigating back to the main screen.
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
